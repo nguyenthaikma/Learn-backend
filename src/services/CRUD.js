@@ -9,7 +9,7 @@ const getAllUser = async () => {
   }
 };
 
-const getOneUser = async (id) => { 
+const getOneUser = async (id) => {
   try {
     const result = await User.findById(id).exec();
     return result;
@@ -18,9 +18,11 @@ const getOneUser = async (id) => {
   }
 };
 
-const register = async (data, { onSuccess, onError }) => {
+const register = async (data, options) => {
+  const onSuccess = options?.onSuccess;
+  const onError = options?.onError;
   try {
-    await User.create(data);
+    const result = await User.create(data);
     if (onSuccess) {
       onSuccess(result);
     }
@@ -33,10 +35,13 @@ const register = async (data, { onSuccess, onError }) => {
   }
 };
 
-const edit = async (data, { onSuccess, onError }) => {
+const edit = async (data, options) => {
+  const onSuccess = options?.onSuccess;
+  const onError = options?.onError;
   try {
     const { id, ...rest } = data;
     const result = await User.updateOne({ _id: id }, { ...rest });
+
     if (onSuccess) {
       onSuccess(result);
     }
@@ -49,7 +54,9 @@ const edit = async (data, { onSuccess, onError }) => {
   }
 };
 
-const deleteUser = async ({ id }, { onSuccess, onError }) => {
+const deleteUser = async ({ id }, options) => {
+  const onSuccess = options?.onSuccess;
+  const onError = options?.onError;
   try {
     const result = await User.deleteOne({ _id: id });
     if (onSuccess) {
