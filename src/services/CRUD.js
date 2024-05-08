@@ -1,20 +1,17 @@
-const connection = require("../config/database");
+const User = require("../models/user");
 
 const getAllUser = async () => {
   try {
-    const [result] = await connection.query("SELECT * FROM Users");
+    const result = await User.find({}).exec();
     return result;
   } catch (err) {
     return err;
   }
 };
 
-const getOneUser = async (id) => {
+const getOneUser = async (id) => { 
   try {
-    const [result] = await connection.query(
-      `SELECT * FROM Users WHERE id = ?`,
-      [id]
-    );
+    const result = await User.findById(id).exec();
     return result;
   } catch (err) {
     return err;
@@ -23,10 +20,7 @@ const getOneUser = async (id) => {
 
 const register = async (data, { onSuccess, onError }) => {
   try {
-    const [result] = await connection.query(
-      `INSERT INTO Users (email, name, city) VALUES(?, ?, ?)`,
-      [data?.email, data?.name, data?.city]
-    );
+    await User.create(data);
     if (onSuccess) {
       onSuccess(result);
     }
@@ -41,12 +35,8 @@ const register = async (data, { onSuccess, onError }) => {
 
 const edit = async (data, { onSuccess, onError }) => {
   try {
-    const [result] = await connection.query(
-      `UPDATE Users 
-        SET email = ?, name = ?, city = ?
-        WHERE id = ?`,
-      [data?.email, data?.name, data?.city, data?.id]
-    );
+    const { id, ...rest } = data;
+    const result = await User.updateOne({ _id: id }, { ...rest });
     if (onSuccess) {
       onSuccess(result);
     }
@@ -61,11 +51,7 @@ const edit = async (data, { onSuccess, onError }) => {
 
 const deleteUser = async ({ id }, { onSuccess, onError }) => {
   try {
-    const [result] = await connection.query(
-      `DELETE FROM Users 
-        WHERE id = ?`,
-      [id]
-    );
+    const result = await User.deleteOne({ _id: id });
     if (onSuccess) {
       onSuccess(result);
     }

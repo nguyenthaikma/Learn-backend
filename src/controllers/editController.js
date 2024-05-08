@@ -2,7 +2,7 @@ const { edit, getOneUser } = require("../services/CRUD");
 
 const getEdit = async (req, res) => {
   const user = await getOneUser(req.params?.id);
-  res.render("edit.ejs", { user: user[0] });
+  res.render("edit.ejs", { user });
 };
 
 const postEdit = (req, res) => {

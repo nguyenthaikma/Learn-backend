@@ -1,9 +1,13 @@
+"use strict";
+
 const express = require("express");
 const configViewEngine = require("./config/viewEngine");
 const editRoutes = require("./routes/edit");
 const homeRoutes = require("./routes/home");
 const registerRoutes = require("./routes/register");
 const { PORT } = require("./config/const");
+const connection = require("./config/database");
+const apiRoutes = require("./routes/api");
 const app = express();
 
 // config
@@ -22,7 +26,17 @@ app.use(
 app.use("/", homeRoutes);
 app.use("/register", registerRoutes);
 app.use("/edit-user", editRoutes);
+app.use("/v1/api", apiRoutes);
 
-app.listen(PORT, process.env.HOST_NAME, () => {
-  console.log(`Example app listening on port ${PORT}`);
-});
+(async () => {
+  try {
+    await connection();
+    app.listen(PORT, process.env.HOST_NAME, () => {
+      console.log(`Example app listening on port ${PORT}`);
+    });
+  } catch (error) {
+    console.log("🚀 ~ error:", error);
+  }
+})();
+
+

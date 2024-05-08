@@ -1,15 +1,37 @@
-const mysql = require("mysql2/promise");
-const { DB_HOST, DB_USER, DB_NAME, DB_PORT, DB_PASSWORD } = require("./const");
+const mongoose = require("mongoose");
+const { DB_USER, DB_PASSWORD, DB_HOST, DB_NAME } = require("./const");
 
-const connection = mysql.createPool({
-  host: DB_HOST,
-  user: DB_USER,
-  database: DB_NAME,
-  port: DB_PORT,
-  password: DB_PASSWORD,
+const dbState = [
+  {
+    value: 0,
+    label: "disconnected",
+  },
+  {
+    value: 1,
+    label: "connected",
+  },
+  {
+    value: 2,
+    label: "connecting",
+  },
+  {
+    value: 3,
+    label: "disconnecting",
+  },
+];
 
-  waitForConnections: true,
-  connectionLimit: 10,
-});
+const connection = async () => {
+  try {
+    mongoose.connect(DB_HOST, {
+      user: DB_USER,
+      pass: DB_PASSWORD,
+      dbName: DB_NAME,
+    });
+    const state = Number(mongoose.connection.readyState);
+    console.log(dbState.find((f) => f.value == state).label, "to db");
+  } catch (error) {
+    console.log("🚀 ~ connection ~ error:", error);
+  }
+};
 
 module.exports = connection;
