@@ -1,10 +1,11 @@
 const express = require("express");
-const { getUsersApi, createUserApi, updateUserApi, deleteUserApi } = require("../controllers/apiController");
+const { getUsersApi, createUserApi, updateUserApi, deleteUserApi, uploadFileApi } = require("../controllers/apiController");
 const apiRoutes = express.Router();
 
 apiRoutes.get("/", getUsersApi);
 apiRoutes.post("/", createUserApi);
 apiRoutes.put("/:id", updateUserApi);
 apiRoutes.delete("/:id", deleteUserApi);
+apiRoutes.post("/file", uploadFileApi);
 
 module.exports = apiRoutes;

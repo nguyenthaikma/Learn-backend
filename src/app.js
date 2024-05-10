@@ -1,6 +1,7 @@
 "use strict";
 
 const express = require("express");
+const fileUpload =  require("express-fileupload");
 const configViewEngine = require("./config/viewEngine");
 const editRoutes = require("./routes/edit");
 const homeRoutes = require("./routes/home");
@@ -12,6 +13,9 @@ const app = express();
 
 // config
 configViewEngine(app);
+
+// config upload file
+app.use(fileUpload());
 
 // Config JSON from request
 app.use(express.json()); // to support JSON-encoded bodies
