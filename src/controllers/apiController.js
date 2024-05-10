@@ -1,5 +1,5 @@
 const { getAllUser, deleteUser, register, edit } = require("../services/CRUD");
-const { uploadFile } = require("../services/upload");
+const { uploadFile, uploadMultipleFile } = require("../services/upload");
 
 const getUsersApi = async (req, res) => {
   const result = await getAllUser();
@@ -46,7 +46,26 @@ const deleteUserApi = async (req, res) => {
 
 const uploadFileApi = async (req, res) => {
   const result = await uploadFile(req.files);
-  if (result.errorCode == 400) {
+  if (result.errorCode == 1) {
+    return res.status(400).json({
+      statusCode: 400,
+      errorCode: 1,
+      response: result,
+    });
+  }
+  return res.status(200).json({
+    statusCode: 200,
+    errorCode: 0,
+    response: result,
+  });
+};
+
+const uploadFilesApi = async (req, res) => {
+  if (!Array.isArray(req.files.sampleFile)) {
+    return uploadFileApi(req, res);
+  }
+  const result = await uploadMultipleFile(req.files.sampleFile);
+  if (result.isError) {
     return res.status(400).json({
       statusCode: 400,
       errorCode: 1,
@@ -65,5 +84,5 @@ module.exports = {
   createUserApi,
   updateUserApi,
   deleteUserApi,
-  uploadFileApi,
+  uploadFilesApi,
 };

@@ -1,7 +1,7 @@
 "use strict";
 
 const express = require("express");
-const fileUpload =  require("express-fileupload");
+const fileUpload = require("express-fileupload");
 const configViewEngine = require("./config/viewEngine");
 const editRoutes = require("./routes/edit");
 const homeRoutes = require("./routes/home");
@@ -42,5 +42,3 @@ app.use("/v1/api", apiRoutes);
     console.log("🚀 ~ error:", error);
   }
 })();
-
-

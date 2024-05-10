@@ -1,5 +1,6 @@
+const path = require("path");
+
 const uploadFile = async (files) => {
-  debugger;
   let sampleFile;
   let uploadPath;
   if (!files || Object.keys(files).length === 0) {
@@ -11,18 +12,21 @@ const uploadFile = async (files) => {
   }
 
   sampleFile = files.sampleFile;
-  const path = __dirname.split("/");
-  path.splice(7, 1, "pulic", "images", "uploads");
+  const pathUrl = path.resolve(__dirname, "../public/images/uploads");
 
-  uploadPath = path.join("/") + "/" + files.sampleFile.name;
+  const extName = path.extname(files.sampleFile.name);
+  const baseName = path.basename(files.sampleFile.name, extName);
+  const fileName = `${baseName}-${Date.now()}${extName}`;
+
+  uploadPath = pathUrl + "/" + fileName;
 
   try {
     const res = await sampleFile.mv(uploadPath);
     return {
       statusCode: 200,
       errorCode: 0,
-      response: "File uploaded to" + uploadPath,
-      data: res,
+      response: res,
+      path: fileName,
     };
   } catch (err) {
     return {
@@ -33,6 +37,50 @@ const uploadFile = async (files) => {
   }
 };
 
+const uploadMultipleFile = async (files) => {
+  if (!files || files.length === 0) {
+    return {
+      statusCode: 400,
+      errorCode: 1,
+      response: "No files were uploaded.",
+    };
+  }
+
+  const result = [];
+  let countSuccess = 0;
+  let isError = false;
+  const pathUrl = path.resolve(__dirname, "../public/images/uploads");
+
+  for (const file of files) {
+    const extName = path.extname(file.name);
+    const baseName = path.basename(file.name, extName);
+    const fileName = `${baseName}-${Date.now()}${extName}`;
+
+    const uploadPath = pathUrl + "/" + fileName;
+
+    try {
+      const res = await file.mv(uploadPath);
+      result.push({
+        statusCode: 200,
+        errorCode: 0,
+        response: res,
+        path: fileName,
+      });
+      countSuccess++;
+    } catch (err) {
+      isError = true;
+      result.push({
+        statusCode: 400,
+        errorCode: 1,
+        response: err,
+      });
+    }
+  }
+
+  return { countSuccess, isError, result };
+};
+
 module.exports = {
   uploadFile,
+  uploadMultipleFile,
 };
