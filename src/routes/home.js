@@ -1,5 +1,5 @@
 const express = require("express");
-const { getHome, deleteUserById } = require("../controllers/homeController");
+const { getHome } = require("../controllers/homeController");
 const router = express.Router();
 
 router.get("/", getHome);

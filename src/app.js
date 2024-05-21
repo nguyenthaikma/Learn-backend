@@ -10,6 +10,7 @@ const { PORT } = require("./config/const");
 const connection = require("./config/database");
 const apiRoutes = require("./routes/api");
 const customerRoutes = require("./routes/customer");
+const projectRoutes = require("./routes/project");
 const app = express();
 
 // config
@@ -33,6 +34,7 @@ app.use("/register", registerRoutes);
 app.use("/edit-user", editRoutes);
 app.use("/v1/api", apiRoutes);
 app.use("/v1/api/customer", customerRoutes);
+app.use("/v1/api/project", projectRoutes);
 
 (async () => {
   try {
